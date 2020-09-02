@@ -97,7 +97,7 @@ const Signin = () => {
         <p>*Username</p>
         <input name="username" onChange={onChange} />
         <p>*Password</p>
-        <input name="password" onChange={onChange} />
+        <input name="password" type="password" onChange={onChange} />
         <button onClick={signIn}>Sign In</button>
         <div>
           <p>

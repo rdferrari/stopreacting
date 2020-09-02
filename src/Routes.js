@@ -29,23 +29,24 @@ const Routes = () => {
     Hub.listen("auth", (data) => {
       const event = data.payload.event;
 
-      // console.log("event:", event);
-
-      switch (data.payload.event) {
+      switch (event) {
         case "signIn":
-          console.log("user signed in");
+          console.log(`user signed in`);
           break;
         case "signUp":
-          console.log("user signed up");
+          console.log(`user signed up`);
           break;
         case "signOut":
-          console.log("user signed out");
+          console.log(`user signed out`);
           break;
         case "signIn_failure":
           console.log("user sign in failed");
           break;
         case "configured":
           console.log("the Auth module is configured");
+          break;
+        default:
+          console.log("Users state");
       }
     });
   }, []);
@@ -72,15 +73,19 @@ const Routes = () => {
       <Router>
         <div>
           <TopMenu handleSignOut={handleSignOut} />
+          {user && <p>Kia ora {user.username}</p>}
 
           <ScrollToTop />
           <Switch>
             <Route exact path="/">
               <Home />
             </Route>
-            <Route path="/signin">
-              <Signin />
-            </Route>
+
+            {!user && (
+              <Route path="/signin">
+                <Signin />
+              </Route>
+            )}
           </Switch>
         </div>
       </Router>
