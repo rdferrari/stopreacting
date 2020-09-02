@@ -1,22 +1,19 @@
 import React, { useEffect, useState, createContext } from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+// Amplify
 import Amplify from "@aws-amplify/core";
 import Auth from "@aws-amplify/auth";
 import { Hub } from "@aws-amplify/core";
-import styled from "styled-components";
 // Components
 import ScrollToTop from "./components/ScrollToTop";
 import TopMenu from "./components/TopMenu";
 // Pages
 import Home from "./pages/Home";
 import Signin from "./pages/Signin";
-
+// Config
 import aws_exports from "./aws-exports";
+// Style
+import styled from "styled-components";
 
 export const UserContext = createContext();
 
@@ -24,57 +21,41 @@ Amplify.configure(aws_exports);
 
 const Routes = () => {
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState(null);
-  const [group, setGroup] = useState(null);
+  // const [username, setUsername] = useState(null);
 
   useEffect(() => {
     getUserData();
 
     Hub.listen("auth", (data) => {
-      const { payload } = data;
-      listener(payload);
+      const event = data.payload.event;
 
-      const groupUsers =
-        data.payload.data.signInUserSession.idToken.payload["cognito:groups"];
+      // console.log("event:", event);
 
-      if (groupUsers) {
-        console.log(groupUsers[0]);
-        setGroup(groupUsers[0]);
+      switch (data.payload.event) {
+        case "signIn":
+          console.log("user signed in");
+          break;
+        case "signUp":
+          console.log("user signed up");
+          break;
+        case "signOut":
+          console.log("user signed out");
+          break;
+        case "signIn_failure":
+          console.log("user sign in failed");
+          break;
+        case "configured":
+          console.log("the Auth module is configured");
       }
-      const username = data.payload.data.username;
-      setUsername(username);
-      console.log(username + " has " + data.payload.event);
     });
   }, []);
 
   const getUserData = async () => {
-    const user = await Auth.currentAuthenticatedUser();
-    user ? setUser(user) : setUser(null);
-
-    const groupUsers = user.signInUserSession.idToken.payload["cognito:groups"];
-
-    if (groupUsers) {
-      console.log(groupUsers[0]);
-      setGroup(groupUsers[0]);
-    }
-  };
-
-  const listener = (payload) => {
-    switch (payload.event) {
-      case "signIn":
-        getUserData();
-        break;
-      case "signUp":
-        console.log("sign up");
-        break;
-      case "signOut":
-        getUserData();
-        setUser(null);
-        setUsername(null);
-        setGroup(null);
-        break;
-      default:
-        return;
+    try {
+      const user = await Auth.currentAuthenticatedUser();
+      user ? setUser(user) : setUser(null);
+    } catch (err) {
+      console.log({ err });
     }
   };
 
@@ -87,7 +68,7 @@ const Routes = () => {
   };
 
   return (
-    <UserContext.Provider value={{ user, username }}>
+    <UserContext.Provider value={{ user }}>
       <Router>
         <div>
           <TopMenu handleSignOut={handleSignOut} />
