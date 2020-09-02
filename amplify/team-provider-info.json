@@ -1,0 +1,20 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-stopreacting-dev-93908-authRole",
+            "UnauthRoleArn": "arn:aws:iam::837623038432:role/amplify-stopreacting-dev-93908-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::837623038432:role/amplify-stopreacting-dev-93908-authRole",
+            "Region": "ap-southeast-2",
+            "DeploymentBucketName": "amplify-stopreacting-dev-93908-deployment",
+            "UnauthRoleName": "amplify-stopreacting-dev-93908-unauthRole",
+            "StackName": "amplify-stopreacting-dev-93908",
+            "StackId": "arn:aws:cloudformation:ap-southeast-2:837623038432:stack/amplify-stopreacting-dev-93908/be29bba0-ed64-11ea-b266-02b29958142e",
+            "AmplifyAppId": "d3hkzhfjkbwge1"
+        },
+        "categories": {
+            "auth": {
+                "stopreacting055ef8dd": {}
+            }
+        }
+    }
+}

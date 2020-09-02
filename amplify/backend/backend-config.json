@@ -1,0 +1,10 @@
+{
+	"auth": {
+		"stopreacting055ef8dd": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [],
+			"customAuth": false
+		}
+	}
+}
