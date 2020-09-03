@@ -1,38 +1,45 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { UserContext } from "../Routes";
 
-let deferredPrompt;
-const addBtn = document.querySelector(".add-button");
-
-window.addEventListener("beforeinstallprompt", (e) => {
-  console.log(e.platforms);
-  // Prevent Chrome 67 and earlier from automatically showing the prompt
-  e.preventDefault();
-  // Stash the event so it can be triggered later.
-  deferredPrompt = e;
-  // Update UI to notify the user they can add to home screen
-  addBtn.style.display = "block";
-
-  addBtn.addEventListener("click", (e) => {
-    // hide our user interface that shows our A2HS button
-    addBtn.style.display = "none";
-    // Show the prompt
-    deferredPrompt.prompt();
-    // Wait for the user to respond to the prompt
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === "accepted") {
-        console.log("User accepted the A2HS prompt");
-      } else {
-        console.log("User dismissed the A2HS prompt");
-      }
-      deferredPrompt = null;
-    });
-  });
-});
-
 const TopMenu = ({ signOut }) => {
+  const [installPromptEvent, setInstallPromptEvent] = useState();
+  useEffect(() => {
+    const beforeInstallPromptHandler = (event) => {
+      event.preventDefault();
+
+      // store the event for later use
+      setInstallPromptEvent(event);
+    };
+    window.addEventListener("beforeinstallprompt", beforeInstallPromptHandler);
+    return () =>
+      window.removeEventListener(
+        "beforeinstallprompt",
+        beforeInstallPromptHandler
+      );
+  }, []);
+
+  //   const handleInstallDeclined = () => {
+  //     // handleUserSeeingInstallPrompt();
+  //     setInstallPromptEvent(null);
+  //   };
+
+  const handleInstallAccepted = () => {
+    console.log("Install PWA");
+    // show native prompt
+    installPromptEvent.prompt();
+
+    // decide what to do after the user chooses
+    installPromptEvent.userChoice.then((choice) => {
+      // if the user declined, we don't want to show the prompt again
+      //   if (choice.outcome !== "accepted") {
+      //     handleUserSeeingInstallPrompt();
+      //   }
+      setInstallPromptEvent(null);
+    });
+  };
+
   return (
     <UserContext.Consumer>
       {({ user }) => (
@@ -48,7 +55,7 @@ const TopMenu = ({ signOut }) => {
             <button onClick={() => signOut}>Sign out</button>
           )}
           <div>
-            <button className="add-button">Install</button>
+            <button onClick={handleInstallAccepted}>Install</button>
           </div>
         </div>
       )}
