@@ -19,6 +19,18 @@ const TopMenu = ({ signOut }) => {
       );
   }, []);
 
+  const handleInstallPwa = () => {
+    installPromptEvent.prompt();
+
+    installPromptEvent.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === "accepted") {
+        console.log("User accepted the A2HS prompt");
+      } else {
+        console.log("User dismissed the A2HS prompt");
+      }
+    });
+  };
+
   console.log(installPromptEvent);
 
   return (
@@ -36,7 +48,7 @@ const TopMenu = ({ signOut }) => {
             <button onClick={() => signOut}>Sign out</button>
           )}
           <div>
-            <button>Install</button>
+            <button onClick={handleInstallPwa}>Install</button>
           </div>
         </div>
       )}
