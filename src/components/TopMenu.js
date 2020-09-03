@@ -4,21 +4,22 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../Routes";
 
 const TopMenu = ({ signOut }) => {
-  // console.log(handleInstallPwa);
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [installPromptEvent, setInstallPromptEvent] = useState();
 
   useEffect(() => {
-    window.addEventListener("beforeinstallprompt", (e) => {
-      // Prevent the mini-infobar from appearing on mobile
-      e.preventDefault();
-      // Stash the event so it can be triggered later.
-      setDeferredPrompt(e);
-      // Update UI notify the user they can install the PWA
-      // showInstallPromotion();
-    });
+    const beforeInstallPromptHandler = (event) => {
+      event.preventDefault();
+      setInstallPromptEvent(event);
+    };
+    window.addEventListener("beforeinstallprompt", beforeInstallPromptHandler);
+    return () =>
+      window.removeEventListener(
+        "beforeinstallprompt",
+        beforeInstallPromptHandler
+      );
   }, []);
 
-  console.log(deferredPrompt);
+  console.log(installPromptEvent);
 
   return (
     <UserContext.Consumer>
@@ -35,7 +36,7 @@ const TopMenu = ({ signOut }) => {
             <button onClick={() => signOut}>Sign out</button>
           )}
           <div>
-            <button onClick={() => deferredPrompt.prompt()}>Install</button>
+            <button>Install</button>
           </div>
         </div>
       )}
