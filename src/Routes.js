@@ -21,7 +21,6 @@ Amplify.configure(aws_exports);
 
 const Routes = () => {
   const [user, setUser] = useState(null);
-  // const [username, setUsername] = useState(null);
 
   useEffect(() => {
     getUserData();
@@ -38,6 +37,7 @@ const Routes = () => {
           break;
         case "signOut":
           console.log(`user signed out`);
+          setUser(null);
           break;
         case "signIn_failure":
           console.log("user sign in failed");
@@ -72,7 +72,7 @@ const Routes = () => {
     <UserContext.Provider value={{ user }}>
       <Router>
         <div>
-          <TopMenu handleSignOut={handleSignOut} />
+          <TopMenu signOut={handleSignOut} />
           {user && <p>Kia ora {user.username}</p>}
 
           <ScrollToTop />
